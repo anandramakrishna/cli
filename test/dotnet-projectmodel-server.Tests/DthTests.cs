@@ -701,6 +701,21 @@ namespace Microsoft.DotNet.ProjectModel.Server.Tests
                       .AssertJArrayCount(0);
             }
         }
+        
+        [Fact]
+        public void TestMissingNuGetCache()
+        {
+            var projectPath = Path.Combine(_testAssetsManager.AssetsRoot, "EmptyConsoleApp");
+            Assert.NotNull(projectPath);
+
+            using (var server = new DthTestServer())//Directory.GetCurrentDirectory()))
+            using (var client = new DthTestClient(server))
+            {
+                client.Initialize(projectPath);
+
+                var dependenies = client.DrainTillFirst(MessageTypes.Dependencies);
+            }
+        }
 
         private static string NormalizePathString(string original)
         {

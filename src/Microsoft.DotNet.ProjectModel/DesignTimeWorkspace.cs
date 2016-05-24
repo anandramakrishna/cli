@@ -15,6 +15,13 @@ namespace Microsoft.DotNet.ProjectModel
 
         private bool _needRefresh;
 
+        private string _packagesDirectory;
+
+        public DesignTimeWorkspace(ProjectReaderSettings settings, string packagesDirectory) : base(settings, true)
+        {
+            _packagesDirectory = packagesDirectory;
+        }
+
         public DesignTimeWorkspace(ProjectReaderSettings settings) : base(settings, true) { }
 
         public void AddProject(string path)
@@ -75,10 +82,16 @@ namespace Microsoft.DotNet.ProjectModel
         {
             foreach (var framework in project.GetTargetFrameworks())
             {
-                yield return CreateBaseProjectBuilder(project)
+                var builder = CreateBaseProjectBuilder(project)
                     .AsDesignTime()
-                    .WithTargetFramework(framework.FrameworkName)
-                    .Build();
+                    .WithTargetFramework(framework.FrameworkName);
+
+                if (!string.IsNullOrEmpty(_packagesDirectory))
+                {
+                    builder = builder.WithPackagesDirectory(_packagesDirectory);
+                }
+
+                yield return builder.Build();
             }
         }
 

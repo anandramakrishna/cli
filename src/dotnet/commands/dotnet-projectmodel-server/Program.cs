@@ -28,6 +28,15 @@ namespace Microsoft.DotNet.ProjectModel.Server
             _workspaceContext = new DesignTimeWorkspace(ProjectReaderSettings.ReadFromEnvironment());
             _projects = new Dictionary<int, ProjectManager>();
         }
+        
+        public ProjectModelServerCommand(int port, string hostName, string packagesDirectory)
+        {
+            _port = port;
+            _hostName = hostName;
+            _protocolManager = new ProtocolManager(maxVersion: 4);
+            _workspaceContext = new DesignTimeWorkspace(ProjectReaderSettings.ReadFromEnvironment(), packagesDirectory);
+            _projects = new Dictionary<int, ProjectManager>();
+        }
 
         public static int Run(string[] args)
         {

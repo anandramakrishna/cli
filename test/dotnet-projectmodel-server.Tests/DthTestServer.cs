@@ -23,6 +23,17 @@ namespace Microsoft.DotNet.ProjectModel.Server.Tests
             _thread = new Thread(() => { _program.OpenChannel(); }) { IsBackground = true };
             _thread.Start();
         }
+        
+        public DthTestServer(string packagesDirectory)
+        {
+            Port = FindFreePort();
+            HostId = Guid.NewGuid().ToString();
+
+            _program = new ProjectModelServerCommand(Port, HostId, packagesDirectory);
+
+            _thread = new Thread(() => { _program.OpenChannel(); }) { IsBackground = true };
+            _thread.Start();
+        }
 
         public string HostId { get; }
 
